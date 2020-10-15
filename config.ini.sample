@@ -1,0 +1,13 @@
+[default]
+# So far, only file backend if available. S3 in the future?
+backend=file
+
+# Where to store state files?
+# .cloudssh/ will be appended to it
+backend_path=/home/anyuser/
+
+# List of login username to try -- order respected.
+usernames=root,ec2-user,ubuntu
+
+# Where are stored SSH keys.
+ssh_key_path=/home/anyuser/.ssh/keys/
