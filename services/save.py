@@ -2,12 +2,6 @@ import importlib
 from services.config import Configuration
 from services.logger import print_green, print_orange
 from models.instances import Account
-from enum import Enum
-
-
-class SaveType(Enum):
-    HOST = "host"
-    STATE = "state"
 
 
 class Save(object):
