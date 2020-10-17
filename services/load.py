@@ -37,9 +37,9 @@ class Load(object):
 
         self.validate(account_obj)
 
-        filtered_instances = get_instances_from_filters(self.account_obj, self.filters)
+        filtered_instances = get_instances_from_filters(account_obj, self.filters)
 
-        for vm in self.account_obj.vms:
+        for vm in account_obj.vms:
             vm.instanceId in filtered_instances and data.append(
                 [
                     vm.instanceId,
