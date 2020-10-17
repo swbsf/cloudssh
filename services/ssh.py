@@ -141,13 +141,3 @@ class DoConnect(object):
         account_obj = self.content.load_state()
         host_obj = self.get_vm_from_instance_id(account_obj, instance_id)
         self._do_connect(host_obj)
-
-    def _create_connection_path_obj(self, instanceId: str, dstIp: str, key: str, username: str) -> dict:
-        """Creates an object with all necessary informations to connect to host"""
-        return {
-            instanceId: {
-                "username": username,
-                "dstIp": dstIp,
-                "key": key
-            }
-        }
