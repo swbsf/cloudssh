@@ -46,7 +46,7 @@ class Load(object):
                     next((tag['Value'] for tag in vm.tags if tag['Key'] == 'Name'), None),
                     vm.publicIp,
                     vm.privateIp,
-                    vm.key,
+                    (vm.key[:26] + '(..)') if len(vm.key) > 30 else vm.key,
                     '\n'.join([tag['Key'] + ": " + tag['Value'] for tag in vm.tags])
                 ]
             )

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class Host(BaseModel):
     instanceId: str = None
     tags: List[dict] = list()
-    key: str = None
+    key: str = str()
     publicIp: str = None
     privateIp: str = None
     username: str = None
