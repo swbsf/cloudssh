@@ -1,5 +1,4 @@
 from models.instances import Account
-from pprint import pprint
 
 
 def get_instances_from_filters(state: Account, filters: list) -> set:
@@ -28,7 +27,10 @@ def get_instances_from_filters(state: Account, filters: list) -> set:
                 for tag in flattened_tags[vm.instanceId]
             )
     ]
-    return set(filtered_instanceId + filtered_tags)
+
+    filtered_id = set(filtered_instanceId + filtered_tags)
+
+    return filtered_id or {vm.instanceId for vm in state.vms}
 
 
 def get_tags_from_instanceId(state: Account, instanceId: str) -> list:

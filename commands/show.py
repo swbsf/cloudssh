@@ -11,5 +11,5 @@ class FetchVM:
 
     def show(self):
         obj = Load(self.account, self.region, self.cloud, self.filters)
-        obj.load()
-        obj.print()
+        state_obj = obj.load_state()
+        obj.print(state_obj)

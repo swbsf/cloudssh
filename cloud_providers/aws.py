@@ -2,7 +2,7 @@
 import boto3
 from os import environ
 from models.interfaces.iProvider import iInstancesFetch
-from models.instances import VirtualMachine, Account
+from models.instances import Host, Account
 
 
 class VMInstancesFetch(iInstancesFetch):
@@ -17,7 +17,7 @@ class VMInstancesFetch(iInstancesFetch):
         None
 
         Returns:
-        Instance of model.instances.VirtualMachines object
+        Instance of model.instances.Host object
         """
 
         self._get_running_instances()
@@ -37,7 +37,7 @@ class VMInstancesFetch(iInstancesFetch):
         )
 
     def extract_metadata(self):
-        """Extract metadata listed in models.instances.VirtualMachine from
+        """Extract metadata listed in models.instances.Host from
         running_instances object"""
 
         vm_list = Account(name=environ['AWS_PROFILE'])
@@ -45,7 +45,7 @@ class VMInstancesFetch(iInstancesFetch):
         for group in self.running_instances['Reservations']:
             for inst in group['Instances']:
                 vm_list.vms.append(
-                    VirtualMachine(
+                    Host(
                         instanceId=inst['InstanceId'],
                         tags=inst.get('Tags') if inst.get('Tags') else list(),
                         key=inst.get('KeyName'),

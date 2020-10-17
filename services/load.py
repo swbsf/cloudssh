@@ -3,7 +3,7 @@ from tabulate import tabulate
 from services.config import Configuration
 from services.filters import get_instances_from_filters
 from services.logger import print_red_and_exit
-from models.instances import Account
+from models.instances import Account, Host
 
 
 class Load(object):
@@ -17,19 +17,25 @@ class Load(object):
 
         self.backend = importlib.import_module("backends." + self.conf.backend)
 
-    def load(self):
-        """Will read data from specified backend."""
+    def load_state(self):
+        """Will read state data from specified backend."""
 
         fp = self.backend.Backend(self.account, self.cloud, self.conf.backend_path)
-        self.account_obj = fp.read()
+        return Account.parse_obj(fp.read_state())
 
-    def print(self):
+    def load_host(self, instance_id: str) -> Host:
+        """Will read state data from specified backend."""
+
+        fp = self.backend.Backend(self.account, self.cloud, self.conf.backend_path)
+        return Host.parse_obj(fp.read_host(instance_id))
+
+    def print(self, account_obj: Account):
         """
         """
 
         data = list()
 
-        self.validate()
+        self.validate(account_obj)
 
         filtered_instances = get_instances_from_filters(self.account_obj, self.filters)
 
@@ -51,8 +57,8 @@ class Load(object):
             tablefmt="rst"
         ))
 
-    def validate(self):
+    def validate(self, account_obj):
         """Checks if state_file_content is a proper Account object or exits."""
 
-        isinstance(self.account_obj, Account) or \
+        isinstance(account_obj, Account) or \
             print_red_and_exit('Something wrong with your state file, you should refresh.')

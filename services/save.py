@@ -24,10 +24,8 @@ class Save(object):
     def on_refresh(self):
         """Will write refreshed account data to specified backend."""
 
-        # state_object = self._build_state_object()
-
         fp = self.backend.Backend(self.account, self.cloud, self.conf.backend_path)
-        content_changed = fp.write(self.content, SaveType.STATE)
+        content_changed = fp.write_state(self.content)
 
         if content_changed:
             print_orange('State changed.')
@@ -45,4 +43,4 @@ class Save(object):
 
     def on_successful_connexion(self):
         fp = self.backend.Backend(self.account, self.cloud, self.conf.backend_path)
-        content_changed = fp.write(self.content, SaveType.HOST)
+        fp.write_host(self.content)
