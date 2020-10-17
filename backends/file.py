@@ -29,7 +29,7 @@ class Backend(iBackend):
             path: str. Full path of file to write.
             content: dict.
         """
-        content_changed = self.read(path) != content.dict()
+        content_changed = self._do_read(path) != content.dict()
 
         if content_changed:
             with open(path, 'w') as f:
@@ -40,14 +40,14 @@ class Backend(iBackend):
     def read_state(self) -> dict:
 
         path = self.ph.state_path
-        return self.read(path)
+        return self._do_read(path)
 
     def read_host(self, instance_id) -> dict:
 
         path = self.ph.get_host_path(instance_id)
-        return self.read(path)
+        return self._do_read(path)
 
-    def read(self, path: str) -> dict:
+    def _do_read(self, path: str) -> dict:
 
         try:
             with open(path, 'r') as f:
