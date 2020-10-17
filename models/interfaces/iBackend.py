@@ -1,18 +1,23 @@
-class iBackend(object):
+from abc import ABC, abstractmethod
+
+
+class iBackend(ABC):
+    @abstractmethod
     def __init__(self):
         pass
 
+    @abstractmethod
     def write_host(self):
-        raise(NotImplementedError)
+        pass
 
+    @abstractmethod
     def write_state(self):
-        raise(NotImplementedError)
+        pass
 
+    @abstractmethod
     def read_state(self):
-        raise(NotImplementedError)
+        pass
 
+    @abstractmethod
     def read_host(self):
-        raise(NotImplementedError)
-
-    def path(self):
-        raise(NotImplementedError)
+        pass
