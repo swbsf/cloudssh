@@ -112,7 +112,7 @@ class DoConnect(object):
         print(tabulate(
             data,
             headers=["Id", "instanceId", "tags"],
-            tablefmt="rst"
+            tablefmt="fancy_grid"
         ))
 
         value = click.prompt('Please choose destination', type=int)
