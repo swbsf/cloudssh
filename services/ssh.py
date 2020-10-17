@@ -45,7 +45,10 @@ class DoConnect(object):
         else:
             for user in self.conf.usernames:
                 host.username = user
+                host.publicIp = host.privateIp if host.publicIp is None else host.publicIp
                 self._do_ssh_and_save(host)
+
+        print_orange("Failed connecting.")
 
     def _do_ssh_and_save(self, host: Host):
         FNULL = open(os.devnull, 'w')
@@ -72,7 +75,6 @@ class DoConnect(object):
             sys.exit(0)
 
         FNULL.close()
-        print_orange("Failed connecting.")
 
     def select_dst(self) -> str:
         self.content = Load(self.account, self.region, self.cloud, self.filters)
