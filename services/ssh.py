@@ -31,11 +31,16 @@ class DoConnect(object):
         account_obj, instance_id = self.select_dst()
         selected_vm = self.get_vm_from_instance_id(account_obj, instance_id)
 
-        try:
+        try:  # host file found
             self.connect_with_host_data(selected_vm.instanceId)
-        except HostNotFound:
+        except HostNotFound:  # host file not found
+            try:
+                self.connect_without_host_data(selected_vm.instanceId)
+            except ConnectionError:  # could not connect at all.
+                print_orange("Failed connecting.")
+        except ConnectionError:  # could not connect with host file
             self.connect_without_host_data(selected_vm.instanceId)
-
+            print_orange("Failed connecting.")
         # dst_ip = selected_vm.privateIp if self.bounce else selected_vm.publicIp
 
     def _do_connect(self, host: Host):
@@ -48,7 +53,7 @@ class DoConnect(object):
                 host.publicIp = host.privateIp if host.publicIp is None else host.publicIp
                 self._do_ssh_and_save(host)
 
-        print_orange("Failed connecting.")
+        raise ConnectionError
 
     def _do_ssh_and_save(self, host: Host):
         FNULL = open(os.devnull, 'w')
