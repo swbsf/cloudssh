@@ -11,7 +11,7 @@ from services.errors import HostNotFound
 from services.config import Configuration
 from services.filters import get_instances_from_filters, get_tags_from_instanceIds
 from services.logger import print_orange, print_light_grey
-from models.instances import Host, Account
+from models.instances import Host
 
 
 class DoConnect(object):
@@ -25,11 +25,14 @@ class DoConnect(object):
 
         self.conf = Configuration()
 
+        self.content = Load(self.account, self.region, self.cloud, self.filters)
+        self.account_obj = self.content.load_state()
+        self.content.validate(self.account_obj)
+
     def connect(self):
         """Will actually run the computed SSH command."""
 
-        account_obj, instance_id = self.select_dst()
-        selected_vm = self.get_vm_from_instance_id(account_obj, instance_id)
+        selected_vm = self.get_vm_from_instance_id(self.select_dst(self.filters))
 
         try:  # host file found
             self.connect_with_host_data(selected_vm.instanceId)
@@ -56,47 +59,61 @@ class DoConnect(object):
         raise ConnectionError
 
     def _do_ssh_and_save(self, host: Host):
-        FNULL = open(os.devnull, 'w')
 
-        ssh = [
-            '/usr/bin/ssh',
-            '-o', 'ConnectTimeout=2',
-            '-i', self.conf.ssh_key_path + host.key + '.pem',
-            host.username + '@' + host.publicIp
-        ]
+        with open(os.devnull, 'w') as FNULL:
+            ssh = self._build_commands(host)
 
-        print_light_grey('Trying: ' + ' '.join(ssh))
-        proc = subprocess.Popen(ssh, stderr=FNULL)
-        proc.communicate()
+            print_light_grey('Trying: ' + ' '.join(ssh))
+            proc = subprocess.run(ssh, text=True)
 
-        if proc.returncode == 0:
-            Save(
-                self.account,
-                self.region,
-                self.cloud,
-                host
-            ).on_successful_connexion()
-            FNULL.close()
-            sys.exit(0)
+            if proc.returncode == 0:
+                Save(
+                    self.account,
+                    self.region,
+                    self.cloud,
+                    host
+                ).on_successful_connexion()
+                FNULL.close()
+                sys.exit(0)
 
-        FNULL.close()
+    def _build_commands(self, host: Host) -> list:
+        if not self.bounce:
+            return [
+                '/usr/bin/ssh',
+                '-o', 'ConnectTimeout=2',
+                '-i', self.conf.ssh_key_path + host.key + '.pem',
+                host.username + '@' + host.publicIp
+            ]
+        else:
+            try:
+                bhost = self.content.load_host(self.select_dst(filters=[self.conf.bounce_host]))
 
-    def select_dst(self) -> str:
-        self.content = Load(self.account, self.region, self.cloud, self.filters)
-        account_obj = self.content.load_state()
-        self.content.validate(account_obj)
+                return [
+                    '/usr/bin/ssh',
+                    '-o', 'ConnectTimeout=2',
+                    '-o', 'ProxyCommand=/usr/bin/ssh -W %h:%p -i ' +
+                          self.conf.ssh_key_path + bhost.key +
+                          '.pem ' + bhost.username +
+                          '@' + bhost.publicIp,
+                    '-i', self.conf.ssh_key_path + host.key + '.pem',
+                    host.username + '@' + host.privateIp
+                ]
+            except Exception as e:
+                print(e)
 
-        results = get_instances_from_filters(account_obj, self.filters)
+    def select_dst(self, filters: list) -> str:
+
+        results = get_instances_from_filters(self.account_obj, filters)
 
         if len(results) > 1:
-            return account_obj, self.prompt_dst(results, get_tags_from_instanceIds(account_obj, list(results)))
+            return self.prompt_dst(results, get_tags_from_instanceIds(self.account_obj, list(results)))
 
         elif len(results) == 0:
             print_orange('No instance found, please change filters.')
-            return None, None
+            sys.exit(1)
 
         else:
-            return account_obj, results.pop()
+            return results.pop()
 
     def prompt_dst(self, results: set, flattened_tags: dict) -> str:
         """
@@ -128,10 +145,10 @@ class DoConnect(object):
 
         return list(results)[value]
 
-    def get_vm_from_instance_id(self, account_obj: Account, instance_id: str) -> Host:
-        for i, vm in enumerate(account_obj.vms):
+    def get_vm_from_instance_id(self, instance_id: str) -> Host:
+        for i, vm in enumerate(self.account_obj.vms):
             if vm.instanceId == instance_id:
-                return account_obj.vms[i]
+                return self.account_obj.vms[i]
 
     def connect_with_host_data(self, instance_id: str):
         host_obj = self.content.load_host(instance_id)
@@ -145,6 +162,5 @@ class DoConnect(object):
     def connect_without_host_data(self, instance_id: str):
         print_light_grey('Host data not found, trying to find a connection path...')
 
-        account_obj = self.content.load_state()
-        host_obj = self.get_vm_from_instance_id(account_obj, instance_id)
+        host_obj = self.get_vm_from_instance_id(instance_id)
         self._do_connect(host_obj)
