@@ -22,3 +22,7 @@ class Configuration(object):
     @property
     def ssh_key_path(self) -> str:
         return self.config['default'].get('ssh_key_path')
+
+    @property
+    def bounce_host(self) -> str:
+        return self.config['default'].get('bounce_host') or 'bastion'
