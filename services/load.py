@@ -39,9 +39,10 @@ class Load(object):
 
         filtered_instances = get_instances_from_filters(account_obj, self.filters)
 
-        for vm in account_obj.vms:
+        for n, vm in enumerate(account_obj.vms):
             vm.instanceId in filtered_instances and data.append(
                 [
+                    n + 1,
                     vm.instanceId,
                     next((tag['Value'] for tag in vm.tags if tag['Key'] == 'Name'), None),
                     vm.publicIp,
@@ -53,7 +54,7 @@ class Load(object):
 
         print(tabulate(
             data,
-            headers=["instanceId", "Name", "publicIp", "privateIp", "SSH Key", "tags"],
+            headers=["id", "instanceId", "Name", "publicIp", "privateIp", "SSH Key", "tags"],
             tablefmt="rst"
         ))
 
