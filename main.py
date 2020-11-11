@@ -5,16 +5,15 @@ from commands.ssh import Connect
 
 
 @click.group()
-@click.option('-a', '--account', default='default')
-@click.option('-r', '--region', default='eu-west-1')
-@click.option('-c', '--cloud', default='aws')
+@click.option('-a', '--account', default='default', help='defaults to "default"')
+@click.option('-r', '--region', default='eu-west-1', help='defaults to eu-west-1')
+@click.option('-c', '--cloud', default='aws', help='defaults to aws')
 @click.pass_context
 def cli(ctx, account, region, cloud):
     ctx.ensure_object(dict)
     ctx.obj['account'] = account
     ctx.obj['region'] = region
     ctx.obj['cloud'] = cloud
-    #ctx.obj['filters'] = list() if filters is None else filters.split(',')
 
 
 @cli.command()
