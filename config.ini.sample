@@ -11,3 +11,6 @@ usernames=root,ec2-user,ubuntu
 
 # Where are stored SSH keys.
 ssh_key_path=/home/anyuser/.ssh/keys/
+
+# When trying to bounce on a bastion host what keyword should be looked at?
+bounce_host=bastion
