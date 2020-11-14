@@ -4,7 +4,7 @@ import configparser
 class Configuration(object):
     def __init__(self):
         self.config = configparser.ConfigParser()
-        self.config.read('config.ini')
+        self.config.read('src/config.ini')
 
     @property
     def backend(self) -> str:
