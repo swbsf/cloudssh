@@ -2,3 +2,6 @@ config.ini
 .vscode
 __pycache__
 *.code-workspace
+build/
+dist/
+*.egg-info
