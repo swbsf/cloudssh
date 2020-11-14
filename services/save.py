@@ -32,6 +32,8 @@ class Save(object):
         """
         return Account(
             name=self.account,
+            cloud=self.cloud,
+            region=self.region,
             vms=self.content
         )
 

@@ -24,7 +24,7 @@ class Load(object):
         return Account.parse_obj(fp.read_state())
 
     def load_host(self, instance_id: str) -> Host:
-        """Will read state data from specified backend."""
+        """Will read host file from specified backend."""
 
         fp = self.backend.Backend(self.account, self.cloud, self.conf.backend_path)
         return Host.parse_obj(fp.read_host(instance_id))

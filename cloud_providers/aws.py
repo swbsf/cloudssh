@@ -10,6 +10,7 @@ class VMInstancesFetch(iInstancesFetch):
         environ['AWS_DEFAULT_REGION'] = region
         environ['AWS_PROFILE'] = profile
         self.ec2 = boto3.client('ec2')
+        self.region = region
 
     def get_list(self):
         """
@@ -40,7 +41,11 @@ class VMInstancesFetch(iInstancesFetch):
         """Extract metadata listed in models.instances.Host from
         running_instances object"""
 
-        vm_list = Account(name=environ['AWS_PROFILE'])
+        vm_list = Account(
+            name=environ['AWS_PROFILE'],
+            cloud="aws",
+            region=self.region
+        )
 
         for group in self.running_instances['Reservations']:
             for inst in group['Instances']:

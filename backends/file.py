@@ -56,7 +56,7 @@ class Backend(iBackend):
             # Path(path).touch()
             return dict()
         except json.JSONDecodeError:
-            print_red('State file is corrupt, removing.')
+            print_red('File is corrupt, removing.')
             Path(path).unlink()
             Path(path).touch()
             return dict()

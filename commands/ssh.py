@@ -1,5 +1,5 @@
 
-from services.ssh import DoConnect
+from services.ssh import ConnectionManager
 
 
 class Connect:
@@ -12,7 +12,7 @@ class Connect:
         self.bounce = bounce
 
     def ssh(self):
-        DoConnect(
+        ConnectionManager(
             self.account,
             self.region,
             self.cloud,
