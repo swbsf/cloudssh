@@ -1,0 +1,5 @@
+boto3==1.15.5
+click==7.1.2
+tabulate==0.8.7
+pydantic==1.6.1
+loguru==0.5.3
