@@ -5,24 +5,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install KinD
+          name: Install Kind
           command: |
             curl -Lo kind https://github.com/kubernetes-sigs/kind/releases/download/0.11.1/kind-linux-amd64
             chmod +x kind
             sudo mv kind /usr/local/bin/
-      - run:
-          name: Create Kubernetes Cluster
-          command: |
-            kind create cluster
-      - run:
-          name: Install kubectl
-          command: |
-            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl
-            chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
-      - run:
-          name: Run Tests
-          command: |
-            export KUBECONFIG="$(kind get kubeconfig-path)"
-            kubectl cluster-info
-            kubectl get pods --all-namespaces
