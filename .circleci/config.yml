@@ -1,12 +1,29 @@
-version: 2
+version: 2.1
 jobs:
   build:
-    machine: true
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
       - run:
-          name: Install index
+          name: "DL kind"
           command: |
-            curl -Lo index https://google.com
-            chmod +x index
-            sudo mv index /usr/local/bin/
+            curl -Lo kind https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-linux-amd64
+            chmod +x kind
+            sudo mv kind /usr/local/bin/
+      - run:
+          name: Create Kubernetes Cluster
+          command: |
+            kind create cluster
+      - run:
+          name: Install kubectl
+          command: |
+            curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.12.0/bin/linux/amd64/kubectl
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
+      - run:
+          name: Run Tests
+          command: |
+            export KUBECONFIG="$(kind get kubeconfig-path)"
+            kubectl cluster-info
+            kubectl get pods --all-namespaces
