@@ -5,8 +5,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Kind
+          name: Install index
           command: |
-            curl -Lo kind https://github.com/kubernetes-sigs/kind/releases/download/0.11.1/kind-linux-amd64
-            chmod +x kind
-            sudo mv kind /usr/local/bin/
+            curl -Lo index https://google.com
+            chmod +x index
+            sudo mv index /usr/local/bin/
