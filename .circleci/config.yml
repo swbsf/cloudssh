@@ -11,9 +11,9 @@ jobs:
             curl -Lo kind https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-linux-amd64
             chmod +x kind
             sudo mv kind /usr/local/bin/
-      - run:
-          name: Fail
-          command: bash -c false
+      #- run:
+      #    name: Fail
+      #    command: bash -c false
       - run:
           name: Create Kubernetes Cluster
           command: |
@@ -36,9 +36,27 @@ jobs:
     steps:
       - run: sleep $((1 + $RANDOM % 20))
       - run: echo Victory!
+  pythonbuild:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - restore_cache:
+          keys:
+            - pydeps-{{ checksum "poetry.lock" }}
+      - save_cache:
+          paths:
+            - ~/.cache/pypoetry
+          key: pydeps-{{ checksum "poetry.lock" }}
+
+      - run: sudo apt update && sudo apt install python3-pip
+      - run: pip install poetry==1.1.7
+      - run: poetry install
+
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - test
       - build
+      - pythonbuild
