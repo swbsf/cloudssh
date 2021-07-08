@@ -38,19 +38,17 @@ jobs:
       - run: echo Victory!
   pythonbuild:
     docker:
-      - image: cimg/base:2021.04
+      - image: cimg/python:3.9
     steps:
       - checkout
       - restore_cache:
           keys:
-            - pydeps-{{ checksum "poetry.lock" }}
-      - run: sudo apt update && sudo apt install python3-pip
-      - run: pip install poetry==1.1.7
-      - run: poetry install
+            - pydeps-{{ checksum "requirements.txt" }}
+      - run: pip3 install -r requirements.txt
       - save_cache:
           paths:
-            - ~/.cache/pypoetry
-          key: pydeps-{{ checksum "poetry.lock" }}
+            - ~/.pyenv/versions
+          key: pydeps-{{ checksum "requirements.txt" }}
 
 workflows:
   version: 2
