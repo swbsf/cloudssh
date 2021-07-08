@@ -13,7 +13,7 @@ jobs:
             sudo mv kind /usr/local/bin/
       - run:
           name: Fail
-          command: false
+          command: bash -c false
       - run:
           name: Create Kubernetes Cluster
           command: |
@@ -30,3 +30,8 @@ jobs:
             export KUBECONFIG="$(kind get kubeconfig-path)"
             kubectl cluster-info
             kubectl get pods --all-namespaces
+  test:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - run: echo Victory!
