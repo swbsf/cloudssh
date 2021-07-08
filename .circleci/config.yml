@@ -35,3 +35,9 @@ jobs:
       - image: cimg/base:2021.04
     steps:
       - run: echo Victory!
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
