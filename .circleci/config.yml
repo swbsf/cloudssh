@@ -34,7 +34,7 @@ jobs:
     docker:
       - image: cimg/base:2021.04
     steps:
-      - run: sleep 10
+      - run: sleep $((1 + $RANDOM % 20))
       - run: echo Victory!
 workflows:
   version: 2
