@@ -44,15 +44,13 @@ jobs:
       - restore_cache:
           keys:
             - pydeps-{{ checksum "poetry.lock" }}
+      - run: sudo apt update && sudo apt install python3-pip
+      - run: pip install poetry==1.1.7
+      - run: poetry install
       - save_cache:
           paths:
             - ~/.cache/pypoetry
           key: pydeps-{{ checksum "poetry.lock" }}
-
-      - run: sudo apt update && sudo apt install python3-pip
-      - run: pip install poetry==1.1.7
-      - run: poetry install
-
 
 workflows:
   version: 2
