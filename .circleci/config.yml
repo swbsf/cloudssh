@@ -14,22 +14,22 @@ jobs:
       #- run:
       #    name: Fail
       #    command: bash -c false
-      - run:
-          name: Create Kubernetes Cluster
-          command: |
-            kind create cluster
-      - run:
-          name: Install kubectl
-          command: |
-            curl -Lo kubectl https://dl.k8s.io/release/v1.21.2/bin/linux/amd64/kubectl
-            chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/
-      - run:
-          name: Run Tests
-          command: |
-            export KUBECONFIG="$(kind get kubeconfig-path)"
-            kubectl cluster-info
-            kubectl get pods --all-namespaces
+      #- run:
+      #    name: Create Kubernetes Cluster
+      #    command: |
+      #      kind create cluster
+      #- run:
+      #    name: Install kubectl
+      #    command: |
+      #      curl -Lo kubectl https://dl.k8s.io/release/v1.21.2/bin/linux/amd64/kubectl
+      #      chmod +x kubectl
+      #      sudo mv kubectl /usr/local/bin/
+      #- run:
+      #    name: Run Tests
+      #    command: |
+      #      export KUBECONFIG="$(kind get kubeconfig-path)"
+      #      kubectl cluster-info
+      #      kubectl get pods --all-namespaces
   test:
     docker:
       - image: cimg/base:2021.04
