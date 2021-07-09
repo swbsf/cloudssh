@@ -20,7 +20,7 @@ jobs:
       - minikube/start:
           kubernetes-version: << parameters.kube-version >>
       - minikube/install-kubectl:
-          kubectl-version: << parameters.kube-version >>
+          kubectl-version: stable
       - helm/install-helm-chart:
           chart: stable/grafana
           release-name: grafana-release
