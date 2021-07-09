@@ -1,41 +1,26 @@
-version: 2
+version: 2.1
+parameters:
+  weather_is_cloudy:
+    type: boolean
+    default: true
+
 jobs:
-  build:
-    machine:
-      image: ubuntu-2004:202010-01
-    steps:
-      - checkout
-      - run:
-          name: Install Kind
-          command: |
-            curl -Lo kind https://github.com/kubernetes-sigs/kind/releases/download/v0.11.1/kind-linux-amd64
-            chmod +x kind
-            sudo mv kind /usr/local/bin/
-      #- run:
-      #    name: Fail
-      #    command: bash -c false
-      #- run:
-      #    name: Create Kubernetes Cluster
-      #    command: |
-      #      kind create cluster
-      #- run:
-      #    name: Install kubectl
-      #    command: |
-      #      curl -Lo kubectl https://dl.k8s.io/release/v1.21.2/bin/linux/amd64/kubectl
-      #      chmod +x kubectl
-      #      sudo mv kubectl /usr/local/bin/
-      #- run:
-      #    name: Run Tests
-      #    command: |
-      #      export KUBECONFIG="$(kind get kubeconfig-path)"
-      #      kubectl cluster-info
-      #      kubectl get pods --all-namespaces
   test:
     docker:
       - image: cimg/base:2021.04
     steps:
       - run: sleep $((1 + $RANDOM % 20))
       - run: echo Victory!
+      - run:
+          name: notifying success
+          command: |
+            curl -X POST -H 'Content-Type: application/json; charset=UTF-8' -d '{"text" : "Job test success"}' 'https://chat.googleapis.com/v1/spaces/AAAA0TgmC4Q/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=stTAWvo7dO7lF0mU56XQDmJ3XpA9JlIcQhfyJwu6ulA%3D'
+          when: on_success
+      - run:
+          name: notifying failure
+          command: |
+            curl -X POST -H 'Content-Type: application/json; charset=UTF-8' -d '{"text" : "Job test failed"}' 'https://chat.googleapis.com/v1/spaces/AAAA0TgmC4Q/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=stTAWvo7dO7lF0mU56XQDmJ3XpA9JlIcQhfyJwu6ulA%3D'
+          when: on_fail
   pythonbuild:
     docker:
       - image: cimg/python:3.9
@@ -49,11 +34,13 @@ jobs:
           paths:
             - ~/.pyenv/versions
           key: pydeps-{{ checksum "requirements.txt" }}
-
 workflows:
   version: 2
   build_and_test:
+    when:
+      and:
+        - equal: [ conditions, << pipeline.git.branch >> ]
+        - not: << pipeline.parameters.weather_is_cloudy >>
     jobs:
       - test
-      - build
       - pythonbuild
