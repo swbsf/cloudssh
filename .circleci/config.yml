@@ -11,6 +11,7 @@ jobs:
     steps:
       - run: sleep $((1 + $RANDOM % 20))
       - run: echo Victory!
+      - run: bash -c false
       - run:
           name: notifying success
           command: |
