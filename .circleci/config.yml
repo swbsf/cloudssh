@@ -1,8 +1,8 @@
 version: 2.1
 parameters:
-  weather_is_cloudy:
+  weather_is_sunny:
     type: boolean
-    default: true
+    default: false
 
 jobs:
   test:
@@ -40,7 +40,7 @@ workflows:
     when:
       and:
         - equal: [ conditions, << pipeline.git.branch >> ]
-        - not: << pipeline.parameters.weather_is_cloudy >>
+        - not: << pipeline.parameters.weather_is_sunny >>
     jobs:
       - test
       - pythonbuild
