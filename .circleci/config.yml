@@ -14,14 +14,14 @@ jobs:
           kubernetes-version: stable
       - minikube/install-kubectl:
           kubectl-version: stable
+          background: true
       - helm/install-helm-chart:
-          chart: stable/grafana
-          helm-version: v3.2.4
-          release-name: grafana-release
-      - helm/install-helm-chart:
-          chart: stable/grafana
-          helm-version: v3.2.4
-          release-name: grafana-release
+          chart: stable/redis
+          release-name: redis
+          background: true
+
+      - run: for i in $(seq 1 10); do kubectl get po -A; sleep 3; done
+
 workflows:
   version: 2
   build_and_test:
