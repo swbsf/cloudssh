@@ -18,7 +18,10 @@ jobs:
           chart: stable/grafana
           helm-version: v3.2.4
           release-name: grafana-release
-
+      - helm/install-helm-chart:
+          chart: stable/grafana
+          helm-version: v3.2.4
+          release-name: grafana-release
 workflows:
   version: 2
   build_and_test:
