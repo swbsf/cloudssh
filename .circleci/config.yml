@@ -16,6 +16,11 @@ jobs:
       - run:
           name: w3
           command: sleep 5 && echo 3
+          background: true
+      - run:
+          name: waiter
+          command: sleep 15
+
 
 workflows:
   version: 2
