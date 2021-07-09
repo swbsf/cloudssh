@@ -11,13 +11,16 @@ jobs:
       helm-version:
         default: "v3.2.4"
         type: string
+      kube-version:
+        default: stable
+        type: string
     steps:
       - minikube/install:
           version: latest
       - minikube/start:
-          kubernetes-version: stable
+          kubernetes-version: << parameters.kube-version >>
       - minikube/install-kubectl:
-          kubectl-version: stable
+          kubectl-version: << parameters.kube-version >>
       - helm/install-helm-chart:
           chart: stable/grafana
           release-name: grafana-release
@@ -35,7 +38,9 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  build_kube:
     jobs:
-      - build
-
+      - build:
+          kube-version: "1.19.1"
+      - build:
+          kube-version: "1.21.1"
