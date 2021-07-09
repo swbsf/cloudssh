@@ -20,7 +20,7 @@ jobs:
           kubectl-version: stable
       - helm/install-helm-client:
           version: << parameters.helm-version >>
-          stable-repo-url: https://charts.bitnami.com/bitnami
+          #stable-repo-url: https://charts.bitnami.com/bitnami
       - helm/install-helm-chart:
           chart: stable/grafana
           release-name: grafana-release
