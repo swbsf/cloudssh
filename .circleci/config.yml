@@ -7,6 +7,10 @@ jobs:
   build:
     machine:
       image: ubuntu-2004:202010-01
+    parameters:
+      helm-version:
+        default: "v3.2.4"
+        type: string
     steps:
       - minikube/install:
           version: latest
@@ -14,13 +18,20 @@ jobs:
           kubernetes-version: stable
       - minikube/install-kubectl:
           kubectl-version: stable
-          background: true
+      - helm/install-helm-client:
+          version: << parameters.helm-version >>
+          stable-repo-url: https://charts.bitnami.com/bitnami
+      - helm/install-helm-chart:
+          chart: stable/grafana
+          release-name: grafana-release
+          wait: false
       - helm/install-helm-chart:
           chart: stable/redis
           release-name: redis
-          background: true
+          wait: false
 
       - run: for i in $(seq 1 10); do kubectl get po -A; sleep 3; done
+
 
 workflows:
   version: 2
