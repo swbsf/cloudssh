@@ -34,6 +34,7 @@ jobs:
           update-repositories: false
 
       - run: for i in $(seq 1 10); do kubectl get po -A; sleep 3; done
+      - run: kubectl version
 
 
 workflows:
