@@ -18,17 +18,17 @@ jobs:
           kubernetes-version: stable
       - minikube/install-kubectl:
           kubectl-version: stable
-      - helm/install-helm-client:
-          version: << parameters.helm-version >>
-          #stable-repo-url: https://charts.bitnami.com/bitnami
       - helm/install-helm-chart:
           chart: stable/grafana
           release-name: grafana-release
+          helm-version: << parameters.helm-version >>
           wait: false
       - helm/install-helm-chart:
           chart: stable/redis
           release-name: redis
+          helm-version: << parameters.helm-version >>
           wait: false
+          update-repositories: false
 
       - run: for i in $(seq 1 10); do kubectl get po -A; sleep 3; done
 
