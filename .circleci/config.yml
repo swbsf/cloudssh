@@ -7,7 +7,7 @@ jobs:
     steps:
       - run:
           name: step1
-          command: sleep 10 && echo 1
+          command: sleep 10 && echo 12
           background: true
       - run:
           name: step2
